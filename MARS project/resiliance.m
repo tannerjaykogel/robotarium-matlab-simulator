@@ -80,7 +80,7 @@ for t = 1:iterations
 
         % static graph
         neighbors = topological_neighbors(L, i);    % get list of neighbors
-        distance = zeros(length(neighbors),1);      % initialize distance to neighbors
+        distance = zeros(1,length(neighbors));      % initialize distance to neighbors
     
         % find (malicious) distance to neighbors
         for nhbr = 1:length(neighbors)
@@ -88,13 +88,14 @@ for t = 1:iterations
         end
         
         % ensure we have the confidence level to get rid of information
+        % otherwise robot will not move
         if length(neighbors) > G
 
             [sorted_dist,nhbr_order] = sort(distance);  % sort distances
     
             % get rid of G furthest away neighbors & apply consnesus dynamics
             for j = 1:length(sorted_dist)-G
-                dxi(:, i) = dxi(:, i) + (xm(:, j) - xm(:, i));
+                dxi(:, i) = dxi(:, i) + (xm(:,neighbors(nhbr_order(j))) - xm(:, i));
             end
 
         end
