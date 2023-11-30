@@ -13,14 +13,15 @@ r = Robotarium('NumberOfRobots', N, 'ShowFigure', true);
 %% Experiment constants
 
 F = 1;                          % number of malicious agents
-G = 1;                          % how many 
+G = 1;                          % how many neighbors to ignore
 iterations = 1000;              % number of iterations the experiment will run over
 mal_r = randperm(N,F);          % list of which robots are malicious
 
 % try out different topologies (make sure to change algorithm section
 % accordingly)
 % L = cycleGL(N);     % constant cycle graph
-L = completeGL(N);  % constant complete graph
+% L = completeGL(N);  % constant complete graph
+L = ERGL(N,0.5);    % constant ER random graph
 
 
 %% Grab tools we need to convert from single-integrator to unicycle dynamics
