@@ -2,26 +2,52 @@
 % MECH 6V29: MARS final project
 
 % Demonstrates a working consensus algorithm where a given number of robots
-% will experience failure & remain stationary for a undetermined amount of
-% time
+% will experience a failure and become malicious where it is giving itself
+% and its neighbors (the same) incorrect information
 clear;clc;
 
+<<<<<<< HEAD
 N = 20;
 r = Robotarium('NumberOfRobots', N, 'ShowFigure', true);
+=======
+rng('default');     % makes it so that all random values are the same each time this code is run 
+
+N = 12;             % number of robots in the simulation
+ic = zeros(3,N);    % initialize initial conditions (robot placement & pose)
+for i = 1:N         % get "random" initial conditions within bounds
+    ic(:,i) = [1.6,1,pi] - 2*[1.6,1,pi].*rand(1,3);
+end
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 
 
 %% Experiment constants
 
+<<<<<<< HEAD
 F = 3;                          % number of malicious agents
 G = 3;                          % how many neighbors to ignore
 iterations = 1000;              % number of iterations the experiment will run over
+=======
+F = 1;                          % number of malicious agents
+G = 0;                          % how many neighbors to ignore
+iterations = 1500;              % number of iterations the experiment will run over
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 mal_r = randperm(N,F);          % list of which robots are malicious
+p = 0.75;                       % probability of ER graph
+fig = 1;                        % figure to use
+figure(fig); clf;               % clear figure for new use
 
 % try out different topologies (make sure to change algorithm section
 % accordingly)
 % L = cycleGL(N);     % constant cycle graph
 L = completeGL(N);  % constant complete graph
+<<<<<<< HEAD
 % L = ERGL(N,0.5);    % constant ER random graph
+=======
+% L = ERGL(N,p);      % constant ER random graph
+
+% use to communicate with robotarium
+r = Robotarium('NumberOfRobots', N, 'ShowFigure', true, 'FigureHandle', figure(fig), 'InitialConditions',ic);
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 
 
 %% Grab tools we need to convert from single-integrator to unicycle dynamics
@@ -37,6 +63,7 @@ uni_barrier_cert_boundary = create_uni_barrier_certificate_with_boundary();
 % velocity vector containing the linear and angular velocity, respectively.
 dxi = zeros(2, N);
 
+<<<<<<< HEAD
 %Create red marker for bad agents
 marker_size_robot = determine_robot_marker_size(r);
 CM = 'red';
@@ -47,6 +74,9 @@ font_size = determine_font_size(r, 0.05);
 iteration_caption = sprintf('Iteration %d', 0);
 iteration_label = text(-1.5, -0.8, iteration_caption, 'FontSize', font_size, 'Color', 'r', 'FontWeight', 'bold');
 
+=======
+rng = ('default');  % in case not using random graph, reset random values so that all random input are the same
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 
 %Iterate for the previously specified number of iterations
 for t = 1:iterations
@@ -94,12 +124,15 @@ for t = 1:iterations
             end
 
         end
+<<<<<<< HEAD
 
 
         % % do not update velocity if robot is malicious
         % if malicious
         %     continue
         % end
+=======
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 
         % static graph
         neighbors = topological_neighbors(L, i);    % get list of neighbors
@@ -157,6 +190,7 @@ end
 % successfully.
 r.debug();
 
+<<<<<<< HEAD
 
 % Marker Size Helper Function to scale size of markers for robots with figure window
 % Input: robotarium class instance
@@ -197,5 +231,27 @@ font_ratio = (font_height_meters)/(robotarium_instance.boundaries(4) -...
 % Determine the font size in points so it fits the window. cursize(4) is
 % the hight of the figure window in points.
 font_size = cursize(4) * font_ratio;
+=======
+%% functions
+
+function [L] = ERGL(n,p)
+    % creates a graph laplacian for an ER random graph with n nodes and
+    % probability p
+    
+    L = zeros(n);   % initialize laplacian
+    
+    % get edges that exist
+    for i = 1:n
+        for j = 1:n
+            if rand <= p && i ~= j
+                % input edge to laplacian
+                L(i,j) = -1; L(j,i) = -1;
+            end
+        end
+    end
+    
+    % input degree of each node on diagonal
+    L = L - diag(sum(L,2));
+>>>>>>> 60800d3762c5550752e3830a7dbc3126485ce224
 
 end

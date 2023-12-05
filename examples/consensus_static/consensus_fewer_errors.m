@@ -6,14 +6,15 @@
 % consensus.m.  Except, this script contains modifications that
 % consider implementation needs.
 
-N = 12;
+N = 10;
 r = Robotarium('NumberOfRobots', N, 'ShowFigure', true);
 
 %% Experiment constants
 
 % Generate a cyclic graph Laplacian from our handy utilities.  For this
 % algorithm, any connected graph will yield consensus
-L = cycleGL(N);
+% L = cycleGL(N);
+L = completeGL(N);
 
 %% Grab tools we need to convert from single-integrator to unicycle dynamics
 
@@ -26,7 +27,7 @@ uni_barrier_cert_boundary = create_uni_barrier_certificate_with_boundary();
 
 % Select the number of iterations for the experiment.  This value is
 % arbitrary
-iterations = 3000;
+iterations = 1000;
 
 % Initialize velocity vector for agents.  Each agent expects a 2 x 1
 % velocity vector containing the linear and angular velocity, respectively.
@@ -92,3 +93,12 @@ end
 % before submitting to maximize the chance that your experiment runs
 % successfully.
 r.debug();
+
+%% check consensus
+center = mean(xi,2);    % approx centeroid of final states
+distance = zeros(1,N);  % initialize distances to centroid
+for i = 1:N
+    distance(i) = norm(xi(:,i) - center);
+end
+max_dist = max(distance);   % maximum distance from center
+mean_dist = mean(distance); % average distance from center
