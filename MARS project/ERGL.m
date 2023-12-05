@@ -15,6 +15,6 @@ for i = 1:n
 end
 
 % input degree of each node on diagonal
-L = L -diag(sum(L,2));
+L = L - diag(sum(L,2));
 
 end

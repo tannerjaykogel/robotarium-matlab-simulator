@@ -2,26 +2,37 @@
 % MECH 6V29: MARS final project
 
 % Demonstrates a working consensus algorithm where a given number of robots
-% will experience failure & remain stationary for a undetermined amount of
-% time
+% will experience a failure and become malicious where it is giving itself
+% and its neighbors (the same) incorrect information
 clear;clc;
 
-N = 12;
-r = Robotarium('NumberOfRobots', N, 'ShowFigure', true);
+rng('default');     % makes it so that all random values are the same each time this code is run 
+
+N = 12;             % number of robots in the simulation
+ic = zeros(3,N);    % initialize initial conditions (robot placement & pose)
+for i = 1:N         % get "random" initial conditions within bounds
+    ic(:,i) = [1.6,1,pi] - 2*[1.6,1,pi].*rand(1,3);
+end
 
 
 %% Experiment constants
 
-F = 1;                          % number of malicious agents
-G = 1;                          % how many neighbors to ignore
-iterations = 1000;              % number of iterations the experiment will run over
+F = 5;                          % number of malicious agents
+G = 2;                          % how many neighbors to ignore
+iterations = 1500;              % number of iterations the experiment will run over
 mal_r = randperm(N,F);          % list of which robots are malicious
+p = 0.5;                        % probability of ER graph
+fig = 1;                        % figure to use
+figure(fig); clf;               % clear figure for new use
 
 % try out different topologies (make sure to change algorithm section
 % accordingly)
 % L = cycleGL(N);     % constant cycle graph
 % L = completeGL(N);  % constant complete graph
-L = ERGL(N,0.5);    % constant ER random graph
+L = ERGL(N,p);      % constant ER random graph
+
+% use to communicate with robotarium
+r = Robotarium('NumberOfRobots', N, 'ShowFigure', true, 'FigureHandle', figure(fig), 'InitialConditions',ic);
 
 
 %% Grab tools we need to convert from single-integrator to unicycle dynamics
@@ -72,11 +83,6 @@ for t = 1:iterations
                 malicious = true;   % indicate maliciousness
             end
 
-        end
-        
-        % do not update velocity if robot is malicious
-        if malicious
-            continue
         end
 
         % static graph

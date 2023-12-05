@@ -39,6 +39,7 @@ for t = 1:iterations
     
     % Convert to SI states
     xi = uni_to_si_states(x);
+    disp(mean(xi,2))
     
     %% Algorithm
     
