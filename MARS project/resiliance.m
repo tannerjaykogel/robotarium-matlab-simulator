@@ -17,19 +17,19 @@ end
 
 %% Experiment constants
 
-F = 5;                          % number of malicious agents
-G = 2;                          % how many neighbors to ignore
+F = 1;                          % number of malicious agents
+G = 0;                          % how many neighbors to ignore
 iterations = 1500;              % number of iterations the experiment will run over
 mal_r = randperm(N,F);          % list of which robots are malicious
-p = 0.5;                        % probability of ER graph
+p = 0.75;                       % probability of ER graph
 fig = 1;                        % figure to use
 figure(fig); clf;               % clear figure for new use
 
 % try out different topologies (make sure to change algorithm section
 % accordingly)
 % L = cycleGL(N);     % constant cycle graph
-% L = completeGL(N);  % constant complete graph
-L = ERGL(N,p);      % constant ER random graph
+L = completeGL(N);  % constant complete graph
+% L = ERGL(N,p);      % constant ER random graph
 
 % use to communicate with robotarium
 r = Robotarium('NumberOfRobots', N, 'ShowFigure', true, 'FigureHandle', figure(fig), 'InitialConditions',ic);
@@ -140,3 +140,26 @@ end
 % before submitting to maximize the chance that your experiment runs
 % successfully.
 r.debug();
+
+%% functions
+
+function [L] = ERGL(n,p)
+    % creates a graph laplacian for an ER random graph with n nodes and
+    % probability p
+    
+    L = zeros(n);   % initialize laplacian
+    
+    % get edges that exist
+    for i = 1:n
+        for j = 1:n
+            if rand <= p && i ~= j
+                % input edge to laplacian
+                L(i,j) = -1; L(j,i) = -1;
+            end
+        end
+    end
+    
+    % input degree of each node on diagonal
+    L = L - diag(sum(L,2));
+
+end
