@@ -48,6 +48,8 @@ uni_barrier_cert_boundary = create_uni_barrier_certificate_with_boundary();
 % velocity vector containing the linear and angular velocity, respectively.
 dxi = zeros(2, N);
 
+rng = ('default');  % in case not using random graph, reset random values so that all random input are the same
+
 %Iterate for the previously specified number of iterations
 for t = 1:iterations
     
